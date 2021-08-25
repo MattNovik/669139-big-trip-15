@@ -1,12 +1,12 @@
 import  {createSiteHeaderFilters} from './view/filters.js';
 import  {createSiteHeaderMenu} from './view/menu.js';
-import {createSiteHeaderTripInfo} from './view/tripInfo.js';
+import {createSiteHeaderTripInfo} from './view/trip-info.js';
 import {createSiteMainSort} from './view/sort.js';
-import {createSiteListEvents} from './view/listEvents.js';
+import {createSiteListEvents} from './view/list-events.js';
 import {createSiteEvent} from './view/event.js';
-import { createSiteAddEvent } from './view/addEvent.js';
+import { createSiteAddEvent } from './view/add-event.js';
 
-const renderSmth = (container, block, place) => {
+const renderElement = (container, block, place) => {
   container.insertAdjacentHTML(place, block);
 };
 
@@ -15,15 +15,15 @@ const siteFilter = document.querySelector('.trip-controls__filters');
 const siteMenu = document.querySelector('.trip-controls__navigation');
 const siteEvents = document.querySelector('.trip-events');
 
-renderSmth(siteFilter, createSiteHeaderFilters(), 'beforeend');
-renderSmth(siteMenu, createSiteHeaderMenu(), 'beforeend');
-renderSmth(siteTripInfo,createSiteHeaderTripInfo(),'afterbegin');
-renderSmth(siteEvents, createSiteMainSort(), 'afterbegin');
-renderSmth(siteEvents, createSiteListEvents(), 'beforeend');
+renderElement(siteFilter, createSiteHeaderFilters(), 'beforeend');
+renderElement(siteMenu, createSiteHeaderMenu(), 'beforeend');
+renderElement(siteTripInfo,createSiteHeaderTripInfo(),'afterbegin');
+renderElement(siteEvents, createSiteMainSort(), 'afterbegin');
+renderElement(siteEvents, createSiteListEvents(), 'beforeend');
 
 const siteListEvents = document.querySelector('.trip-events__list');
 
 for (let i = 0; i < 3; i++) {
-  renderSmth(siteListEvents, createSiteEvent(), 'beforeend');
+  renderElement(siteListEvents, createSiteEvent(), 'beforeend');
 }
-renderSmth(siteListEvents, createSiteAddEvent(), 'afterbegin');
+renderElement(siteListEvents, createSiteAddEvent(), 'afterbegin');
