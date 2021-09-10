@@ -6,6 +6,7 @@ import {createSiteListEvents} from './view/list-events.js';
 import {createSiteEvent} from './view/event.js';
 import { createSiteAddEvent } from './view/add-event.js';
 import { generateEvent } from './mock/event.js';
+import { generateFilter } from './mock/filter.js';
 
 const EVENT_COUNT = 20;
 
@@ -14,6 +15,9 @@ const renderElement = (container, block, place) => {
 };
 
 const events = new Array(EVENT_COUNT).fill().map(generateEvent);
+const filters = generateFilter(events);
+
+console.log(filters);
 
 const siteTripInfo = document.querySelector('.trip-main');
 const siteFilter = document.querySelector('.trip-controls__filters');
