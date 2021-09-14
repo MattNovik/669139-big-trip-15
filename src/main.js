@@ -1,21 +1,42 @@
 import  {createSiteHeaderFilters} from './view/filters.js';
-import  {createSiteHeaderMenu} from './view/menu.js';
-import {createSiteHeaderTripInfo} from './view/trip-info.js';
-import {createSiteMainSort} from './view/sort.js';
-import {createSiteListEvents} from './view/list-events.js';
-import {createSiteEvent} from './view/event.js';
-import { createSiteAddEvent } from './view/add-event.js';
+import SiteHeaderFiltersView from './view/filters.js';
+import SiteHeaderMenuView from './view/menu.js';
+import SiteHeaderTripInfoView from './view/trip-info.js';
+import SiteMainSortView from './view/sort.js';
+import SiteListEventsView from './view/list-events.js';
+import SiteEventView from './view/event.js';
+import SiteAddEventView from './view/add-event.js';
 import { generateEvent } from './mock/event.js';
 import { generateFilter } from './mock/filter.js';
+import { renderTemplate, renderElement, RenderPosition } from './utils.js';
 
 const EVENT_COUNT = 20;
 
-const renderElement = (container, block, place) => {
-  container.insertAdjacentHTML(place, block);
-};
-
 const events = new Array(EVENT_COUNT).fill().map(generateEvent);
 const filters = generateFilter(events);
+
+const renderEvent = (eventListElement, event) => {
+  const eventComponent = new SiteEventView(event);
+  const eventEditComponent = new SiteAddEventView(event);
+
+  const replaceEventToForm = () => {
+    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToEvent = () => {
+    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', ()=> {
+    replaceEventToForm();
+  });
+
+  eventEditComponent.getElement().querySelector('.event__save-btn').addEventListener('click', (evt) => {
+    replaceFormToEvent();
+  });
+
+  renderElement(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 console.log(filters);
 
@@ -24,16 +45,16 @@ const siteFilter = document.querySelector('.trip-controls__filters');
 const siteMenu = document.querySelector('.trip-controls__navigation');
 const siteEvents = document.querySelector('.trip-events');
 
-renderElement(siteFilter, createSiteHeaderFilters(), 'beforeend');
-renderElement(siteMenu, createSiteHeaderMenu(), 'beforeend');
-renderElement(siteTripInfo,createSiteHeaderTripInfo(),'afterbegin');
-renderElement(siteEvents, createSiteMainSort(), 'afterbegin');
-renderElement(siteEvents, createSiteListEvents(), 'beforeend');
+renderElement(siteFilter, new SiteHeaderFiltersView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMenu, new SiteHeaderMenuView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteTripInfo,new SiteHeaderTripInfoView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(siteEvents, new SiteMainSortView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(siteEvents, new SiteListEventsView().getElement(), RenderPosition.BEFOREEND);
 
 const siteListEvents = document.querySelector('.trip-events__list');
 
-for (let i = 1; i < EVENT_COUNT; i++) {
-  renderElement(siteListEvents, createSiteEvent(events[i]), 'beforeend');
+for (let i = 0; i < EVENT_COUNT; i++) {
+  renderEvent(siteListEvents,events[i]);
 }
 
-renderElement(siteListEvents, createSiteAddEvent(events[0]), 'afterbegin');
+//renderElement(siteListEvents, new SiteAddEventView(events[0]).getElement(), RenderPosition.AFTERBEGIN);

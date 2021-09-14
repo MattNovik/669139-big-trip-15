@@ -1,19 +1,17 @@
 import { POINTS } from '../const.js';
+import { createElement } from '../utils.js';
 
 const generateEventTypeItems = () => {
-  let elements = ``;
-  POINTS.forEach(element => {
-    let newElem = element.toLowerCase();
-
-    elements += (`<div class="event__type-item">
-        <input id="event-type-${newElem}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${newElem}">
-        <label class="event__type-label  event__type-label--${newElem}" for="event-type-${newElem}-1">${element}</label>
-      </div>`);
+  const elements = POINTS.map((element) => {
+    `<div class="event__type-item">
+        <input id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}">
+        <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
+      </div>`;
   });
-   return elements;
+  return elements;
 };
 
-export const createSiteAddEvent = (event = {}) => {
+const createSiteAddEvent = (event = {}) => {
 
   const {eventPoints ='Bus', eventCity = 'London', eventPrice = '100', eventDate, eventStartDate, eventEndDate, eventDescription = 'good day', eventPhoto, isChecked} = event;
 
@@ -133,4 +131,27 @@ export const createSiteAddEvent = (event = {}) => {
     </section>
   </section>
 </form>`
+};
+
+export default class SiteAddEvent {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteAddEvent(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
 };

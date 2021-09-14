@@ -1,8 +1,7 @@
 import dayjs from "dayjs";
+import { createElement } from "../utils";
 
-const isAfterFutere = (eventDate) => dayjs().isAfter(eventDate, 'D');
-
-export const createSiteEvent = (event) => {
+const createSiteEvent = (event) => {
 
   const {eventPoints, eventCity, eventPrice, eventDate, eventStartDate, eventEndDate, eventDescription, eventPhoto, isFavorite} = event;
 
@@ -44,4 +43,27 @@ export const createSiteEvent = (event) => {
     </button>
   </div>
 </li>`;
+};
+
+export default class SiteEvent {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteEvent(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
 };
