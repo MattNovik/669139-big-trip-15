@@ -10,7 +10,7 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const renderElement = (container, element, place) => {
+const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -32,4 +32,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {RenderPosition, getRandomInteger, renderTemplate, renderElement, createElement};
+export {RenderPosition, getRandomInteger, renderTemplate, render, createElement};
