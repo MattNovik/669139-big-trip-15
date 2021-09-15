@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { createElement } from "../utils";
+import AbstractView from "./abstract";
 
 const createSiteEvent = (event) => {
 
@@ -45,25 +45,24 @@ const createSiteEvent = (event) => {
 </li>`;
 };
 
-export default class SiteEvent {
+export default class SiteEvent extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createSiteEvent(this._events);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 };

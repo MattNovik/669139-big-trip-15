@@ -1,5 +1,5 @@
 import { POINTS } from '../const.js';
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
 
 const generateEventTypeItems = () => {
   const elements = POINTS.map((element) => {
@@ -133,25 +133,29 @@ const createSiteAddEvent = (event = {}) => {
 </form>`
 };
 
-export default class SiteAddEvent {
+export default class SiteAddEvent extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
+    this._eventHandler = this._eventHandler.bind(this);
   }
 
   getTemplate() {
     return createSiteAddEvent(this._events);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _eventHandler(evt) {
+    evt.preventDefault();
+    this._callback.event();
   }
 
-  removeElement() {
-    this._element = null;
+  setEventSubmitHandler(callback) {
+    this._callback.event = callback;
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._eventHandler);
+  }
+
+  setEventCloseHandler(callback) {
+    this._callback.event = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._eventHandler);
   }
 };

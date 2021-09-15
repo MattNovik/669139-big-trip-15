@@ -1,4 +1,4 @@
-import { createElement } from "../utils";
+import AbstractView from "./abstract";
 
 const createSiteHeaderFilters = () => (
   `<form class="trip-filters" action="#" method="get">
@@ -21,24 +21,8 @@ const createSiteHeaderFilters = () => (
 </form>`
 );
 
-export default class SiteHeaderFilters {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SiteHeaderFilters extends AbstractView {
   getTemplate() {
     return createSiteHeaderFilters();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 };

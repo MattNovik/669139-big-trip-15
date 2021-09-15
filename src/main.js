@@ -9,7 +9,7 @@ import SiteAddEventView from './view/add-event.js';
 import NoEventView from './view/no-event.js';
 import { generateEvent } from './mock/event.js';
 import { generateFilter } from './mock/filter.js';
-import { render, RenderPosition } from './utils.js';
+import { RenderPosition, render, replace } from './utils/render.js';
 
 const EVENT_COUNT = 20;
 
@@ -21,11 +21,11 @@ const renderEvent = (eventListElement, event) => {
   const eventEditComponent = new SiteAddEventView(event);
 
   const replaceEventToForm = () => {
-    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceFormToEvent = () => {
-    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -36,22 +36,22 @@ const renderEvent = (eventListElement, event) => {
     }
   };
 
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', ()=> {
+  eventComponent.setEditClickHandler(() => {
     replaceEventToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().querySelector('.event__save-btn').addEventListener('click', (evt) => {
+  eventEditComponent.setEventSubmitHandler(() => {
     replaceFormToEvent();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().querySelector('.event__reset-btn').addEventListener('click', (evt) => {
+  eventEditComponent.setEventCloseHandler(() => {
     replaceFormToEvent();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 };
 
 const siteTripInfo = document.querySelector('.trip-main');
@@ -59,16 +59,16 @@ const siteFilter = document.querySelector('.trip-controls__filters');
 const siteMenu = document.querySelector('.trip-controls__navigation');
 const siteEvents = document.querySelector('.trip-events');
 
-render(siteFilter, new SiteHeaderFiltersView().getElement(), RenderPosition.BEFOREEND);
-render(siteMenu, new SiteHeaderMenuView().getElement(), RenderPosition.BEFOREEND);
-render(siteTripInfo,new SiteHeaderTripInfoView().getElement(), RenderPosition.AFTERBEGIN);
-render(siteEvents, new SiteMainSortView().getElement(), RenderPosition.AFTERBEGIN);
-render(siteEvents, new SiteListEventsView().getElement(), RenderPosition.BEFOREEND);
+render(siteFilter, new SiteHeaderFiltersView(), RenderPosition.BEFOREEND);
+render(siteMenu, new SiteHeaderMenuView(), RenderPosition.BEFOREEND);
+render(siteTripInfo,new SiteHeaderTripInfoView(), RenderPosition.AFTERBEGIN);
+render(siteEvents, new SiteMainSortView(), RenderPosition.AFTERBEGIN);
+render(siteEvents, new SiteListEventsView(), RenderPosition.BEFOREEND);
 
 const siteListEvents = document.querySelector('.trip-events__list');
 
 if (events.length === 0) {
-  render(siteListEvents, new NoEventView().getElement(), RenderPosition.AFTERBEGIN);
+  render(siteListEvents, new NoEventView(), RenderPosition.AFTERBEGIN);
 } else {
   for (let i = 0; i < EVENT_COUNT; i++) {
     renderEvent(siteListEvents, events[i]);
