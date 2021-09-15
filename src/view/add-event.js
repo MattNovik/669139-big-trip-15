@@ -156,6 +156,6 @@ export default class SiteAddEvent extends AbstractView {
 
   setEventCloseHandler(callback) {
     this._callback.event = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._eventHandler);
+    this.getElement().addEventListener('submit', this._eventHandler);
   }
 };
