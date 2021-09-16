@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils/utils.js';
+import { nanoid } from 'nanoid';
 import { POINTS } from '../const.js';
 import { CITIES } from '../const.js';
 
@@ -37,6 +38,7 @@ const generateEndDate = () => {
 
 export const generateEvent = () => {
   return {
+    id: nanoid(),
     eventDate: generateDate(),
     eventStartDate: generateStartDate(),
     eventEndDate: generateEndDate(),

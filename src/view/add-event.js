@@ -137,6 +137,7 @@ export default class SiteAddEvent extends AbstractView {
   constructor(events) {
     super();
     this._events = events;
+
     this._eventHandler = this._eventHandler.bind(this);
   }
 
@@ -146,7 +147,7 @@ export default class SiteAddEvent extends AbstractView {
 
   _eventHandler(evt) {
     evt.preventDefault();
-    this._callback.event();
+    this._callback.event(this._events);
   }
 
   setEventSubmitHandler(callback) {

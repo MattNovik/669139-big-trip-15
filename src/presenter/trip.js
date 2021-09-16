@@ -3,9 +3,11 @@ import SiteHeaderMenuView from '../view/menu.js';
 import SiteHeaderTripInfoView from '../view/trip-info.js';
 import SiteMainSortView from '../view/sort.js';
 import SiteListEventsView from '../view/list-events.js';
-import SiteEventView from '../view/event.js';
-import SiteAddEventView from '../view/add-event.js';
+//import SiteEventView from '../view/event.js';
+//import SiteAddEventView from '../view/add-event.js';
+import { updateItem } from '../utils/utils.js';
 import NoEvent from '../view/no-event.js';
+import PointPresenter from './point.js';
 import { RenderPosition, render, replace } from '../utils/render.js'
 
 const EVENT_COUNT = 20;
@@ -13,21 +15,33 @@ const EVENT_COUNT = 20;
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._eventPresenter = new Map();
 
     this._tripComponent = new SiteListEventsView();
     this._sortComponent = new SiteMainSortView();
     this._noEventComponent = new NoEvent();
     //this._listEventsComponent = new SiteListEventsView();
     this._tripInfoComponent = new SiteHeaderTripInfoView();
+
+    this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(tripEvents) {
     this._tripEvents = tripEvents.slice();
 
     render(this._tripContainer, this._tripComponent, RenderPosition.BEFOREEND);
-    //render(this._tripComponent, this._listEventsComponent, RenderPosition.BEFOREEND);
 
     this._renderTrip();
+  }
+
+  _handleModeChange() {
+    this._eventPresenter.forEach((presenter) => presenter.resetView());
+  }
+
+  _handleEventChange(updateEvent) {
+    this._tripEvents = updateItem(this._tripEvents, updateEvent);
+    this._eventPresenter.get(updateEvent.id).init(updateEvent);
   }
 
   _renderSort() {
@@ -35,7 +49,7 @@ export default class Trip {
   }
 
   _renderEvent(event) {
-    const eventComponent = new SiteEventView(event);
+    /* const eventComponent = new SiteEventView(event);
     const eventEditComponent = new SiteAddEventView(event);
 
     const replaceEventToForm = () => {
@@ -69,13 +83,19 @@ export default class Trip {
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    render(this._tripComponent, eventComponent, RenderPosition.BEFOREEND);
-
-
+    render(this._tripComponent, eventComponent, RenderPosition.BEFOREEND); */
+    const eventPresenter = new PointPresenter(this._tripContainer, this._handleEventChange, this._handleModeChange);
+    eventPresenter.init(event);
+    this._eventPresenter.set(event.id, eventPresenter);
   }
 
   _renderEvents(from, to) {
     this._tripEvents.slice(from, to).forEach((tripEvent) => this._renderEvent(tripEvent));
+  }
+
+  _clearEvents() {
+    this._eventPresenter.forEach((presenter) => presenter.destroy());
+    this._eventPresenter.clear();
   }
 
   _renderNoEvent() {
