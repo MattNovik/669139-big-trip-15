@@ -18,7 +18,7 @@ export default class Point {
     this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind();
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
@@ -74,7 +74,7 @@ export default class Point {
   _replaceFormToEvent() {
     replace(this._eventComponent, this._eventEditComponent);
     document.removeEventListener('keydown',this._escKeyDownHandler);
-    this._mode = Mode.EDITING;
+    this._mode = Mode.DEFAULT;
   }
 
   _escKeyDownHandler(evt) {

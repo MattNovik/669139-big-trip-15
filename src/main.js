@@ -59,7 +59,7 @@ const siteTripInfo = document.querySelector('.trip-main');
 const siteFilter = document.querySelector('.trip-controls__filters');
 const siteMenu = document.querySelector('.trip-controls__navigation');
 
-const siteEvents = document.querySelector('.trip-events');
+const sitePage = document.querySelector('.page-main .page-body__container');
 
 render(siteFilter, new SiteHeaderFiltersView(), RenderPosition.BEFOREEND);
 render(siteMenu, new SiteHeaderMenuView(), RenderPosition.BEFOREEND);
@@ -85,7 +85,7 @@ render(siteTripInfo,new SiteHeaderTripInfoView(), RenderPosition.AFTERBEGIN);
 
 }; */
 
-const tripPresenter = new TripPresenter(siteEvents);
+const tripPresenter = new TripPresenter(sitePage);
 
 //renderEventsList(siteEvents, events);
 

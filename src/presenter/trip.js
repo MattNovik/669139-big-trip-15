@@ -3,6 +3,7 @@ import SiteHeaderMenuView from '../view/menu.js';
 import SiteHeaderTripInfoView from '../view/trip-info.js';
 import SiteMainSortView from '../view/sort.js';
 import SiteListEventsView from '../view/list-events.js';
+import ContainerView from '../view/container.js';
 //import SiteEventView from '../view/event.js';
 //import SiteAddEventView from '../view/add-event.js';
 import { updateItem } from '../utils/utils.js';
@@ -17,10 +18,10 @@ export default class Trip {
     this._tripContainer = tripContainer;
     this._eventPresenter = new Map();
 
-    this._tripComponent = new SiteListEventsView();
+    this._tripComponent = new ContainerView();
     this._sortComponent = new SiteMainSortView();
     this._noEventComponent = new NoEvent();
-    //this._listEventsComponent = new SiteListEventsView();
+    this._listEventsComponent = new SiteListEventsView();
     this._tripInfoComponent = new SiteHeaderTripInfoView();
 
     this._handleEventChange = this._handleEventChange.bind(this);
@@ -31,6 +32,7 @@ export default class Trip {
     this._tripEvents = tripEvents.slice();
 
     render(this._tripContainer, this._tripComponent, RenderPosition.BEFOREEND);
+    render(this._tripComponent, this._listEventsComponent, RenderPosition.BEFOREEND);
 
     this._renderTrip();
   }
@@ -45,7 +47,7 @@ export default class Trip {
   }
 
   _renderSort() {
-    render(this._tripComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderEvent(event) {
@@ -84,7 +86,7 @@ export default class Trip {
     });
 
     render(this._tripComponent, eventComponent, RenderPosition.BEFOREEND); */
-    const eventPresenter = new PointPresenter(this._tripContainer, this._handleEventChange, this._handleModeChange);
+    const eventPresenter = new PointPresenter(this._listEventsComponent, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter.set(event.id, eventPresenter);
   }
