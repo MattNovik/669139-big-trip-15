@@ -148,13 +148,13 @@ export default class SiteAddEvent extends AbstractView {
     this._events = events;
 
     this._eventHandler = this._eventHandler.bind(this);
-    this._pointHandler = this._pointHandler.bind(this);
+    //this._pointHandler = this._pointHandler.bind(this);
 
-    this.getElement().querySelector('.event__type-group').addEventListener('click', function (evt) {
+    /* this.getElement().querySelector('.event__type-group').addEventListener('click', function (evt) {
       if (evt.target == 'input') {
         this._pointHandler;
       }
-    });
+    }); */
   }
 
 
@@ -162,7 +162,7 @@ export default class SiteAddEvent extends AbstractView {
     return createSiteAddEvent(this._events);
   }
 
-  updateData(update) {
+  /* updateData(update) {
     if (!update) {
       return;
     }
@@ -174,16 +174,16 @@ export default class SiteAddEvent extends AbstractView {
     );
 
     this.updateElement();
-  }
+  } */
 
-  _pointHandler(evt) {
+  /* _pointHandler(evt) {
     evt.preventDefault();
     this.updateData({
       eventPoints: !this._events.eventPoints;
     });
-  }
+  } */
 
-  updateElement() {
+  /* updateElement() {
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
@@ -192,7 +192,7 @@ export default class SiteAddEvent extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
   }
-
+ */
   _eventHandler(evt) {
     evt.preventDefault();
     this._callback.event(this._events);
