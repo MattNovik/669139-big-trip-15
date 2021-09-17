@@ -1,5 +1,8 @@
 import { POINTS } from '../const.js';
-import AbstractView from './abstract.js';
+import { CITIES } from '../const.js';
+import SmartView from './smart.js';
+import { getRandomInteger } from '../utils/utils.js';
+import { render, RenderPosition } from '../utils/render.js';
 
 const generateEventTypeItems = () => {
   const elements = POINTS.map((element) => {
@@ -11,6 +14,15 @@ const generateEventTypeItems = () => {
 
   return elements.join('');
 };
+
+const generateEventCities = () => {
+  const elements = CITIES.map((element) => {
+   return `<option value="${element}"></option>`;
+  });
+
+  return elements.join('');
+};
+
 const createSiteAddEvent = (event = {}) => {
 
   const {eventPoints ='Bus',
@@ -22,8 +34,8 @@ const createSiteAddEvent = (event = {}) => {
     eventDescription = 'good day',
     eventPhoto,
     isChecked,
+    offers,
   } = event;
-
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
@@ -45,11 +57,9 @@ const createSiteAddEvent = (event = {}) => {
       <label class="event__label  event__type-output" for="event-destination-1">
         ${eventPoints}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventCity}" list="destination-list-1">
       <datalist id="destination-list-1">
-        <option value="Amsterdam"></option>
-        <option value="Geneva"></option>
-        <option value="Chamonix"></option>
+        ${generateEventCities()}
       </datalist>
     </div>
 
@@ -77,50 +87,7 @@ const createSiteAddEvent = (event = {}) => {
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isChecked? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-luggage-1">
-            <span class="event__offer-title">Add luggage</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">30</span>
-          </label>
-        </div>
 
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" ${isChecked? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-comfort-1">
-            <span class="event__offer-title">Switch to comfort class</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">100</span>
-          </label>
-        </div>
-
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal" ${isChecked? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-meal-1">
-            <span class="event__offer-title">Add meal</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">15</span>
-          </label>
-        </div>
-
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats" ${isChecked? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-seats-1">
-            <span class="event__offer-title">Choose seats</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">5</span>
-          </label>
-        </div>
-
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train" ${isChecked? 'checked' : ''}>
-          <label class="event__offer-label" for="event-offer-train-1">
-            <span class="event__offer-title">Travel by train</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">40</span>
-          </label>
-        </div>
       </div>
     </section>
 
@@ -142,60 +109,76 @@ const createSiteAddEvent = (event = {}) => {
 </form>`
 };
 
-export default class SiteAddEvent extends AbstractView {
+export default class SiteAddEvent extends SmartView {
   constructor(events) {
     super();
-    this._events = events;
+    this._data = SiteAddEvent.parseEventToData(events);
 
     this._eventHandler = this._eventHandler.bind(this);
-    //this._pointHandler = this._pointHandler.bind(this);
+    this._pointHandler = this._pointHandler.bind(this);
+    this._destinationHandler = this._destinationHandler.bind(this);
+    this._generateOffers = this._generateOffers.bind(this);
 
-    /* this.getElement().querySelector('.event__type-group').addEventListener('click', function (evt) {
-      if (evt.target == 'input') {
-        this._pointHandler;
-      }
-    }); */
+    this._setInnerHandlers();
   }
-
 
   getTemplate() {
-    return createSiteAddEvent(this._events);
+    return createSiteAddEvent(this._data);
   }
 
-  /* updateData(update) {
-    if (!update) {
-      return;
+  _generateOffers(data) {
+    let newData = [];
+    for (let i = 1; i < getRandomInteger(1, data.length); i++) {
+      newData.push(data[i]);
     }
+    const element = newData.map((element) => {
+     return `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort">
+          <label class="event__offer-label" for="event-offer-comfort-1">
+            <span class="event__offer-title">${element.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${element.price}</span>
+          </label>
+        </div>`;
+    });
+    const newElement = element.join('');
+    this.getElement().querySelector('.event__available-offers').insertAdjacentHTML(RenderPosition.BEFOREEND, newElement);
+  }
 
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    this.updateElement();
-  } */
-
-  /* _pointHandler(evt) {
+  _pointHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      eventPoints: !this._events.eventPoints;
+      eventPoints: this._data.eventPoints = evt.target.value,
     });
-  } */
-
-  /* updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
+    this._generateOffers(this._data.offers);
   }
- */
+
+  _destinationHandler(evt) {
+    evt.preventDefault()
+    this.updateData({
+      eventCity: this._data.eventCity = evt.target.value,
+    });
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setEventSubmitHandler(this._callback.event);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener('click', (evt) => {
+      if (evt.target.tagName === 'INPUT') {
+        this._pointHandler(evt);
+      }
+    });
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', (evt) => {
+      this._destinationHandler(evt);
+    })
+  }
+
   _eventHandler(evt) {
     evt.preventDefault();
-    this._callback.event(this._events);
+    this._callback.event(SiteAddEvent.parseDataToEvent(this._data));
   }
 
   setEventSubmitHandler(callback) {
@@ -206,5 +189,21 @@ export default class SiteAddEvent extends AbstractView {
   setEventCloseHandler(callback) {
     this._callback.event = callback;
     this.getElement().addEventListener('submit', this._eventHandler);
+  }
+
+  static parseEventToData(event) {
+    return Object.assign(
+      {},
+      event,
+      {
+        eventPoints: event.eventPoints,
+      },
+    );
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    return data;
   }
 };
