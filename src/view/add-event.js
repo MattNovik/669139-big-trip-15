@@ -3,17 +3,26 @@ import AbstractView from './abstract.js';
 
 const generateEventTypeItems = () => {
   const elements = POINTS.map((element) => {
-    `<div class="event__type-item">
+   return `<div class="event__type-item">
         <input id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}">
         <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
       </div>`;
   });
-  return elements;
-};
 
+  return elements.join('');
+};
 const createSiteAddEvent = (event = {}) => {
 
-  const {eventPoints ='Bus', eventCity = 'London', eventPrice = '100', eventDate, eventStartDate, eventEndDate, eventDescription = 'good day', eventPhoto, isChecked} = event;
+  const {eventPoints ='Bus',
+    eventCity = 'London',
+    eventPrice = '100',
+    eventDate,
+    eventStartDate,
+    eventEndDate,
+    eventDescription = 'good day',
+    eventPhoto,
+    isChecked,
+  } = event;
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -139,10 +148,49 @@ export default class SiteAddEvent extends AbstractView {
     this._events = events;
 
     this._eventHandler = this._eventHandler.bind(this);
+    this._pointHandler = this._pointHandler.bind(this);
+
+    this.getElement().querySelector('.event__type-group').addEventListener('click', function (evt) {
+      if (evt.target == 'input') {
+        this._pointHandler;
+      }
+    });
   }
+
 
   getTemplate() {
     return createSiteAddEvent(this._events);
+  }
+
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+      {},
+      this._data,
+      update,
+    );
+
+    this.updateElement();
+  }
+
+  _pointHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      eventPoints: !this._events.eventPoints;
+    });
+  }
+
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
   }
 
   _eventHandler(evt) {

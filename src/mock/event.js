@@ -42,7 +42,7 @@ export const generateEvent = () => {
     eventDate: generateDate(),
     eventStartDate: generateStartDate(),
     eventEndDate: generateEndDate(),
-    eventPoints :generatePoinst(),
+    eventPoints: generatePoinst(),
     eventCity:generateCity(),
     eventPrice:getRandomInteger(1000, 10000),
     eventDescription: generateDescription(),
