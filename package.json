@@ -13,5 +13,9 @@
   },
   "engines": {
     "node": "12"
+  },
+  "dependencies": {
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }
